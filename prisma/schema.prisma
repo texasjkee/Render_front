@@ -7,23 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Event {
+  id       Int      @id @default(autoincrement())
+  name     String
+  isDone   Boolean
+  isPaid   Boolean
+  price    Int
+  date     DateTime
+  authorId Int
+  author   User     @relation(fields: [authorId], references: [id])
+
+  @@map("events")
+}
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  roles     Role[]
-  Token     Token[]
+  id       Int     @id @default(autoincrement())
+  email    String  @unique(map: "User_email_key")
+  name     String?
+  password String?
+  events   Event[]
+  tokens   Token[]
 
   @@map("users")
 }
 
 model Token {
-  token  String   @unique
-  exp    DateTime
-  user   User     @relation(fields: [userId], references: [id])
-  userId String
+  token     String   @unique
+  exp       DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  userAgent String   @map("user_agent")
 
   @@map("tokens")
 }
