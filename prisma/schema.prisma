@@ -27,6 +27,7 @@ model User {
   password String?
   events   Event[]
   tokens   Token[]
+  roles    Role[]
 
   @@map("users")
 }

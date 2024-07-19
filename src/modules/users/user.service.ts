@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(private readonly prismaService: PrismaService) { }
 
     save(user: Partial<User>) {
         const hashedPassword = this.hashPassword(user.password);
@@ -18,15 +18,13 @@ export class UserService {
         });
     }
 
-    findOne(idOrMail: string) {
+    findOne(id: number) {
         return this.prismaService.user.findFirst({
-            where: {
-                OR: [{ id: idOrMail }, { email: idOrMail }],
-            },
+            where: { id },
         });
     }
 
-    delete(id: string) {
+    delete(id: number) {
         return this.prismaService.user.delete({ where: { id } });
     }
 
