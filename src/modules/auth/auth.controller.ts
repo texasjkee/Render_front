@@ -14,7 +14,7 @@ export class AuthController {
 
     @Post('sign-up')
     @ApiCreatedResponse()
-    async signUp(@Body() body: SignUpBodyDto, @Res() res: Response) {
+    async signUp(@Body() body: SignUpBodyDto, @Res({ passthrough: true }) res: Response) {
         const { accessToken } = await this.authService.signUp(body.email, body.password);
 
         this.cookieService.setToken(res, accessToken);
@@ -22,11 +22,12 @@ export class AuthController {
 
     @Post('sign-in')
     @ApiOkResponse()
-
     //TODO: why do we do this?
     @HttpCode(HttpStatus.OK)
-    signIn(@Body() body: SignInBodyDto) {
-        return this.authService.signIn(body.email, body.password);
+    async signIn(@Body() body: SignInBodyDto, @Res({ passthrough: true }) res: Response) {
+        const { accessToken } = await this.authService.signIn(body.email, body.password);
+
+        this.cookieService.setToken(res, accessToken);
     }
 
     @Post('sign-out')
